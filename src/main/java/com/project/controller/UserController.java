@@ -1,6 +1,5 @@
 package com.project.controller;
 
-import java.util.Arrays;
 import java.util.List;
 import com.project.model.User;
 import com.project.service.IUserService;
@@ -16,12 +15,10 @@ public class UserController {
     private IUserService userService;
 
     @GetMapping("/users")
-    public String findCities(Model model) {
+    public String findUsers(Model model) {
 
-        List<User> cities = userService.findAll();
+        List<User> users = userService.findAll();
 
-        //model.addAttribute("cities", cities);
-
-        return cities.get(0).getUsername();
+        return users.get(0).getUsername();
     }
 }
