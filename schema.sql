@@ -32,7 +32,6 @@ CREATE TABLE t_Player(
 )ENGINE=InnoDB;
 
 CREATE TABLE t_Player_Team(
-	id int PRIMARY KEY AUTO_INCREMENT,
 	assigned_position varchar(255),
 	player_id int,
 	team_id int,

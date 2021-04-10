@@ -1,6 +1,7 @@
 package com.project.model;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "t_user")
@@ -18,6 +19,8 @@ public class User {
 
     @Column(name = "email")
     private String email;
+
+    public User() {}
 
     public Integer getId() {
         return this.id;
@@ -50,4 +53,14 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(username, user.username) &&
+                Objects.equals(password, user.password);
+    }
+
 }

@@ -1,6 +1,9 @@
 package com.project.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "t_team")
@@ -24,6 +27,12 @@ public class Team {
 
     @Column(name = "user_id")
     private Integer userId;
+
+    @OneToMany(mappedBy = "team")
+    @JsonManagedReference
+    private List<PlayerTeam> players;
+
+    public Team(){}
 
     public Integer getId() {
         return this.id;
@@ -71,5 +80,13 @@ public class Team {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public List<PlayerTeam> getPlayers() {
+        return this.players;
+    }
+
+    public void setPlayers(List<PlayerTeam> players) {
+        this.players = players;
     }
 }

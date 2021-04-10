@@ -1,6 +1,9 @@
 package com.project.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "t_player")
@@ -26,6 +29,13 @@ public class Player {
 
     @Column(name = "picture")
     private String picture;
+
+    @OneToMany(mappedBy = "player")
+    @JsonIgnore
+    private List<PlayerTeam> playerTeams;
+
+    public Player() {
+    }
 
     public Integer getId() {
         return this.id;
@@ -81,5 +91,13 @@ public class Player {
 
     public void setPicture(String picture) {
         this.picture = picture;
+    }
+
+    public List<PlayerTeam> getPlayerTeams() {
+        return playerTeams;
+    }
+
+    public void setPlayerTeams(List<PlayerTeam> playerTeams) {
+        this.playerTeams = playerTeams;
     }
 }

@@ -1,5 +1,6 @@
 package com.project.service;
 
+import com.project.interfaces.IUserService;
 import com.project.model.User;
 import com.project.repository.UserRepository;
 import java.util.List;
@@ -16,5 +17,9 @@ public class UserService implements IUserService {
     public List<User> findAll() {
 
         return (List<User>) repository.findAll();
+    }
+
+    public void addUser(User user){
+        repository.save(user);
     }
 }
