@@ -22,4 +22,8 @@ public class UserService implements IUserService {
     public void addUser(User user){
         repository.save(user);
     }
+
+    public User getUserByUsername(String username){
+        return repository.getUserByUsername(username);
+    }
 }

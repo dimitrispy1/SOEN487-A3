@@ -5,9 +5,11 @@ import com.project.model.Team;
 import com.project.repository.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Transactional
 @Service
 public class TeamService implements ITeamService {
 
@@ -32,11 +34,10 @@ public class TeamService implements ITeamService {
     }
 
     @Override
-    public boolean deleteTeam(Long id){
+    public boolean deleteTeam(Integer id){
 
-        boolean exists = repository.existsById(id);
-        if(exists)
-            repository.deleteById(id);
-        return exists;
+        repository.deleteById(id);
+
+        return true;
     }
 }

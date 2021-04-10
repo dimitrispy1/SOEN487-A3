@@ -1,11 +1,14 @@
 package com.project.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import com.project.model.*;
 import com.project.interfaces.IPlayerService;
 import com.project.interfaces.IPlayerTeamService;
 import com.project.interfaces.ITeamService;
 import com.project.interfaces.IUserService;
+import com.project.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +29,9 @@ public class UserController {
     @Autowired
     private IPlayerTeamService playerTeamService;
 
+    @Autowired
+    private TokenService tokenService;
+
     @PostMapping(value="/users", consumes = MediaType.APPLICATION_JSON_VALUE)
     public UserResponse authenticateUser(@RequestBody User user) {
 
@@ -35,6 +41,11 @@ public class UserController {
         if(users.contains(user)) {
             userResponse.setStatus(true);
             userResponse.setMessage("User authenticated");
+            User newUser = userService.getUserByUsername(user.getUsername());
+            String token = tokenService.issueValidToken(newUser);
+            List list = new ArrayList();
+            list.add(token);
+            userResponse.setData(list);
         }else{
             userResponse.setStatus(false);
             userResponse.setMessage("User not authenticated");
@@ -55,30 +66,69 @@ public class UserController {
     }
 
     @GetMapping("/players")
-    public UserResponse getPlayers() {
+    public UserResponse getPlayers(@RequestHeader("Authorization") String authHeader) {
+        User user = tokenService.validateToken(authHeader.split(" ")[1]);
         UserResponse userResponse = new UserResponse();
 
-        List<Player> players = playerService.findAll();
-        userResponse.setStatus(true);
-        userResponse.setData(players);
+        if(user != null) {
+            List<Player> players = playerService.findAll();
+            userResponse.setStatus(true);
+            userResponse.setData(players);
+        }else{
+            userResponse.setStatus(false);
+            userResponse.setMessage("Invalid Token");
+        }
 
         return userResponse;
     }
 
     @GetMapping("/teams")
-    public UserResponse getTeamsForUser(@RequestParam Integer id) {
+    public UserResponse getTeamsForUser(@RequestHeader("Authorization") String authHeader) {
 
-        List<Team> teams = teamService.getTeamsForUser(id);
-
+        User user = tokenService.validateToken(authHeader.split(" ")[1]);
         UserResponse userResponse = new UserResponse();
-        userResponse.setStatus(true);
-        userResponse.setData(teams);
+
+        if(user != null) {
+            List<Team> teams = teamService.getTeamsForUser(user.getId());
+
+            userResponse.setStatus(true);
+            userResponse.setData(teams);
+        }else{
+            userResponse.setStatus(false);
+            userResponse.setMessage("Invalid Token");
+        }
 
         return userResponse;
     }
 
     @PostMapping(value="/team", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public UserResponse addTeam(@RequestBody Team team) {
+    public UserResponse addTeam(@RequestBody Team team, @RequestHeader("Authorization") String authHeader) {
+        User user = tokenService.validateToken(authHeader.split(" ")[1]);
+        UserResponse userResponse = new UserResponse();
+
+        if(user != null) {
+            team.setId(user.getId());
+            teamService.addTeam(team);
+
+            List<PlayerTeam> playerTeams = team.getPlayers();
+            for (PlayerTeam playerTeam : playerTeams) {
+                PlayerTeamKey key = new PlayerTeamKey(playerTeam.getPlayer().getId(), playerTeam.getTeam().getId());
+                playerTeam.setId(key);
+            }
+            playerTeamService.addPlayerTeam(playerTeams);
+
+            userResponse.setStatus(true);
+            userResponse.setMessage("Team added");
+        }else{
+            userResponse.setStatus(false);
+            userResponse.setMessage("Invalid Token");
+        }
+
+        return userResponse;
+    }
+
+    @PutMapping(value="/team", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public UserResponse editTeam(@RequestBody Team team) {
         teamService.addTeam(team);
 
         List<PlayerTeam> playerTeams = team.getPlayers();
@@ -96,12 +146,18 @@ public class UserController {
     }
 
     @DeleteMapping("/team")
-    public UserResponse deleteTeam(@RequestParam Long id) {
+    public UserResponse deleteTeam(@RequestParam Integer id, @RequestHeader("Authorization") String authHeader) {
+        User user = tokenService.validateToken(authHeader.split(" ")[1]);
         UserResponse userResponse = new UserResponse();
 
-        teamService.deleteTeam(id);
-        userResponse.setStatus(true);
-        userResponse.setMessage("Team deleted");
+        if(user != null) {
+            teamService.deleteTeam(id);
+            userResponse.setStatus(true);
+            userResponse.setMessage("Team deleted");
+        }else {
+            userResponse.setStatus(false);
+            userResponse.setMessage("Invalid Token");
+        }
 
         return userResponse;
     }
