@@ -12,4 +12,6 @@ public interface TeamRepository extends CrudRepository<Team, Long> {
     List<Team> findByUserId (Integer id);
 
     Integer deleteById(Integer id);
+
+    Team findTeamById (Integer id);
 }

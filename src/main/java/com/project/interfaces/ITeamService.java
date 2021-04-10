@@ -13,4 +13,6 @@ public interface ITeamService {
     List<Team> getTeamsForUser(Integer id);
 
     boolean deleteTeam(Integer id);
+
+    Team getTeamById(Integer id);
 }

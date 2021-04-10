@@ -40,4 +40,9 @@ public class TeamService implements ITeamService {
 
         return true;
     }
+
+    @Override
+    public Team getTeamById(Integer id){
+        return repository.findTeamById(id);
+    }
 }
