@@ -1,6 +1,7 @@
 package com.project.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.project.mapper.TeamMapper;
 
 import javax.persistence.*;
 import java.util.List;
@@ -41,6 +42,14 @@ public class Team {
         this.totalAssists = totalAssists;
         this.totalRebounds = totalRebounds;
         this.userId = userId;
+    }
+
+    public Team(TeamMapper teamMapper){
+        this.id = teamMapper.getId();
+        this.name = teamMapper.getName();
+        this.totalPts = teamMapper.getTotalPoints();
+        this.totalAssists = teamMapper.getTotalAst();
+        this.totalRebounds = teamMapper.getTotalReb();
     }
 
     public Integer getId() {

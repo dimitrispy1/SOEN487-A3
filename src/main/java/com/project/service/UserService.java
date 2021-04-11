@@ -19,11 +19,18 @@ public class UserService implements IUserService {
         return (List<User>) repository.findAll();
     }
 
+    @Override
     public void addUser(User user){
         repository.save(user);
     }
 
+    @Override
     public User getUserByUsername(String username){
         return repository.getUserByUsername(username);
+    }
+
+    @Override
+    public User getUserById(Integer id) {
+        return repository.getUserById(id);
     }
 }

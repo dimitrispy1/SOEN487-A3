@@ -2,12 +2,16 @@ package com.project.controller;
 
 import com.project.interfaces.IPlayerTeamService;
 import com.project.interfaces.ITeamService;
+import com.project.interfaces.IUserService;
+import com.project.mapper.PlayerMapper;
+import com.project.mapper.TeamMapper;
 import com.project.model.*;
 import com.project.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -19,6 +23,9 @@ public class TeamController {
 
     @Autowired
     private IPlayerTeamService playerTeamService;
+
+    @Autowired
+    private IUserService userService;
 
     @Autowired
     private TokenService tokenService;
@@ -42,13 +49,22 @@ public class TeamController {
         return userResponse;
     }
 
-    @PostMapping(value="/team", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public UserResponse addTeam(@RequestBody Team team, @RequestHeader("Authorization") String authHeader) {
+    @PutMapping(value="/team", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public UserResponse addTeam(@RequestBody TeamMapper teamMapper, @RequestHeader("Authorization") String authHeader) {
         User user = tokenService.validateToken(authHeader.split(" ")[1]);
         UserResponse userResponse = new UserResponse();
 
         if(user != null) {
-            team.setId(user.getId());
+            Team team = new Team(teamMapper);
+            List<PlayerMapper> playersMappers = teamMapper.getForwards();
+            playersMappers.addAll(teamMapper.getGuards());
+            List<PlayerTeam> players = new ArrayList<>();
+            for(PlayerMapper playerMapper: playersMappers){
+                players.add(new PlayerTeam(playerMapper, team));
+            }
+            team.setPlayers(players);
+
+            team.setUserId(user.getId());
             teamService.addTeam(team);
 
             List<PlayerTeam> playerTeams = team.getPlayers();
@@ -68,20 +84,37 @@ public class TeamController {
         return userResponse;
     }
 
-    @PutMapping(value="/team", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public UserResponse editTeam(@RequestBody Team team) {
-        teamService.addTeam(team);
-
-        List<PlayerTeam> playerTeams = team.getPlayers();
-        for (PlayerTeam playerTeam : playerTeams) {
-            PlayerTeamKey key = new PlayerTeamKey(playerTeam.getPlayer().getId(), playerTeam.getTeam().getId());
-            playerTeam.setId(key);
-        }
-        playerTeamService.addPlayerTeam(playerTeams);
-
+    @PostMapping(value="/team", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public UserResponse editTeam(@RequestBody TeamMapper teamMapper, @RequestHeader("Authorization") String authHeader) {
+        User user = tokenService.validateToken(authHeader.split(" ")[1]);
         UserResponse userResponse = new UserResponse();
-        userResponse.setStatus(true);
-        userResponse.setMessage("Team added");
+
+        if(user != null) {
+            Team team = new Team(teamMapper);
+            List<PlayerMapper> playersMappers = teamMapper.getForwards();
+            playersMappers.addAll(teamMapper.getGuards());
+            List<PlayerTeam> players = new ArrayList<>();
+            for(PlayerMapper playerMapper: playersMappers){
+                players.add(new PlayerTeam(playerMapper, team));
+            }
+            team.setPlayers(players);
+
+            team.setUserId(user.getId());
+            teamService.addTeam(team);
+
+            List<PlayerTeam> playerTeams = team.getPlayers();
+            for (PlayerTeam playerTeam : playerTeams) {
+                PlayerTeamKey key = new PlayerTeamKey(playerTeam.getPlayer().getId(), playerTeam.getTeam().getId());
+                playerTeam.setId(key);
+            }
+            playerTeamService.addPlayerTeam(playerTeams);
+
+            userResponse.setStatus(true);
+            userResponse.setMessage("Team added");
+        }else{
+            userResponse.setStatus(false);
+            userResponse.setMessage("Invalid Token");
+        }
 
         return userResponse;
     }
@@ -112,6 +145,12 @@ public class TeamController {
     @GetMapping("/leaderboard")
     public UserResponse getLeaderboard(){
         List<Team> leaderboard = teamService.getLeaderboard();
+
+        for (Team team : leaderboard) {
+            User user = userService.getUserById(team.getUserId());
+            team.setName(team.getName() + "-" + user.getUsername());
+        }
+
         UserResponse userResponse = new UserResponse();
 
         userResponse.setStatus(true);

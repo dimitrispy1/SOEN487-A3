@@ -10,4 +10,6 @@ public interface IUserService {
     void addUser(User user);
 
     User getUserByUsername(String username);
+
+    User getUserById(Integer id);
 }

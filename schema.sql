@@ -25,9 +25,9 @@ CREATE TABLE t_Player(
 	id int PRIMARY KEY,
 	name varchar(255),
 	position varchar(255),
-	avg_pts int,
-	avg_assists int,
-	avg_rebounds int,
+	avg_pts FLOAT,
+	avg_assists FLOAT,
+	avg_rebounds FLOAT,
 	picture varchar(255)
 )ENGINE=InnoDB;
 

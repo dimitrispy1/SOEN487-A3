@@ -1,6 +1,7 @@
 package com.project.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.project.mapper.PlayerMapper;
 
 import javax.persistence.*;
 
@@ -26,6 +27,12 @@ public class PlayerTeam {
     private Team team;
 
     public PlayerTeam(){}
+
+    public PlayerTeam(PlayerMapper playerMapper, Team team){
+        this.assignedPosition = playerMapper.getAssignedPosition();
+        this.player = new Player(playerMapper.getId());
+        this.team = team;
+    }
 
     public PlayerTeamKey getId() {
         return this.id;

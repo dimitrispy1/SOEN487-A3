@@ -19,13 +19,13 @@ public class Player {
     private String position;
 
     @Column(name = "avg_pts")
-    private Integer avgPts;
+    private Double avgPts;
 
     @Column(name = "avg_assists")
-    private Integer avgAssists;
+    private Double avgAssists;
 
     @Column(name = "avg_rebounds")
-    private Integer avgRebounds;
+    private Double avgRebounds;
 
     @Column(name = "picture")
     private String picture;
@@ -35,6 +35,10 @@ public class Player {
     private List<PlayerTeam> playerTeams;
 
     public Player() {
+    }
+
+    public Player(Integer id){
+        this.id = id;
     }
 
     public Integer getId() {
@@ -61,27 +65,27 @@ public class Player {
         this.position = position;
     }
 
-    public Integer getAvgPts() {
+    public Double getAvgPts() {
         return this.avgPts;
     }
 
-    public void setAvgPts(Integer avgPts) {
+    public void setAvgPts(Double avgPts) {
         this.avgPts = avgPts;
     }
 
-    public Integer getAvgAssists() {
+    public Double getAvgAssists() {
         return this.avgAssists;
     }
 
-    public void setAvgAssists(Integer avgAssists) {
+    public void setAvgAssists(Double avgAssists) {
         this.avgAssists = avgAssists;
     }
 
-    public Integer getAvgRebounds() {
+    public Double getAvgRebounds() {
         return this.avgRebounds;
     }
 
-    public void setAvgRebounds(Integer avgRebounds) {
+    public void setAvgRebounds(Double avgRebounds) {
         this.avgRebounds = avgRebounds;
     }
 
