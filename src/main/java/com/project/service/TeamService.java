@@ -45,4 +45,9 @@ public class TeamService implements ITeamService {
     public Team getTeamById(Integer id){
         return repository.findTeamById(id);
     }
+
+    @Override
+    public List<Team> getLeaderboard(){
+        return repository.getLeaderboard();
+    }
 }

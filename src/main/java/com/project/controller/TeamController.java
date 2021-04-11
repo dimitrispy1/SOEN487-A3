@@ -108,4 +108,14 @@ public class TeamController {
 
         return userResponse;
     }
+
+    @GetMapping("/leaderboard")
+    public UserResponse getLeaderboard(){
+        List<Team> leaderboard = teamService.getLeaderboard();
+        UserResponse userResponse = new UserResponse();
+
+        userResponse.setStatus(true);
+        userResponse.setData(leaderboard);
+        return userResponse;
+    }
 }

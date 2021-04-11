@@ -24,4 +24,9 @@ public class TokenService {
         else
             return null;
     }
+
+    public void revokeToken(String token){
+        if(payload.containsKey(token))
+            payload.remove(token);
+    }
 }

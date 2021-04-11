@@ -51,4 +51,15 @@ public class UserController {
 
         return userResponse;
     }
+
+    @GetMapping("/logout")
+    public UserResponse logout(@RequestHeader("Authorization") String authHeader) {
+        tokenService.revokeToken(authHeader.split(" ")[1]);
+        UserResponse userResponse = new UserResponse();
+
+        userResponse.setStatus(true);
+        userResponse.setMessage("User logged out");
+
+        return userResponse;
+    }
 }

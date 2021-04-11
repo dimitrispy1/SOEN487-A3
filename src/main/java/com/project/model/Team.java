@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import javax.persistence.*;
 import java.util.List;
 
-@Entity
+@Entity(name = "t_team")
 @Table(name = "t_team")
 public class Team {
     @Id
@@ -33,6 +33,15 @@ public class Team {
     private List<PlayerTeam> players;
 
     public Team(){}
+
+    public Team(Integer id, String name, Integer totalPts, Integer totalAssists, Integer totalRebounds, Integer userId) {
+        this.id = id;
+        this.name = name;
+        this.totalPts = totalPts;
+        this.totalAssists = totalAssists;
+        this.totalRebounds = totalRebounds;
+        this.userId = userId;
+    }
 
     public Integer getId() {
         return this.id;

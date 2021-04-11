@@ -15,4 +15,6 @@ public interface ITeamService {
     boolean deleteTeam(Integer id);
 
     Team getTeamById(Integer id);
+
+    List<Team> getLeaderboard();
 }
