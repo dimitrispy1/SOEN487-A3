@@ -17,4 +17,6 @@ public interface ITeamService {
     Team getTeamById(Integer id);
 
     List<Team> getLeaderboard();
+
+    void updateTeam(Team team);
 }

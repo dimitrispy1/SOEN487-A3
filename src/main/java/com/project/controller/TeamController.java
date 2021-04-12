@@ -91,26 +91,33 @@ public class TeamController {
 
         if(user != null) {
             Team team = new Team(teamMapper);
-            List<PlayerMapper> playersMappers = teamMapper.getForwards();
-            playersMappers.addAll(teamMapper.getGuards());
-            List<PlayerTeam> players = new ArrayList<>();
-            for(PlayerMapper playerMapper: playersMappers){
-                players.add(new PlayerTeam(playerMapper, team));
+            Team teamId = teamService.getTeamById(team.getId());
+            if(teamId.getUserId() == user.getId()) {
+                List<PlayerMapper> playersMappers = teamMapper.getForwards();
+                playersMappers.addAll(teamMapper.getGuards());
+                List<PlayerTeam> players = new ArrayList<>();
+                for (PlayerMapper playerMapper : playersMappers) {
+                    players.add(new PlayerTeam(playerMapper, team));
+                }
+                team.setPlayers(players);
+
+                team.setUserId(user.getId());
+                teamService.updateTeam(team);
+                playerTeamService.deleteAllByTeam(team);
+
+                List<PlayerTeam> playerTeams = team.getPlayers();
+                for (PlayerTeam playerTeam : playerTeams) {
+                    PlayerTeamKey key = new PlayerTeamKey(playerTeam.getPlayer().getId(), playerTeam.getTeam().getId());
+                    playerTeam.setId(key);
+                }
+                playerTeamService.addPlayerTeam(playerTeams);
+
+                userResponse.setStatus(true);
+                userResponse.setMessage("Team updated");
+            }else{
+                userResponse.setStatus(false);
+                userResponse.setMessage("Error updating team");
             }
-            team.setPlayers(players);
-
-            team.setUserId(user.getId());
-            teamService.addTeam(team);
-
-            List<PlayerTeam> playerTeams = team.getPlayers();
-            for (PlayerTeam playerTeam : playerTeams) {
-                PlayerTeamKey key = new PlayerTeamKey(playerTeam.getPlayer().getId(), playerTeam.getTeam().getId());
-                playerTeam.setId(key);
-            }
-            playerTeamService.addPlayerTeam(playerTeams);
-
-            userResponse.setStatus(true);
-            userResponse.setMessage("Team added");
         }else{
             userResponse.setStatus(false);
             userResponse.setMessage("Invalid Token");

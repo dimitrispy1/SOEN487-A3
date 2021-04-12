@@ -50,4 +50,16 @@ public class TeamService implements ITeamService {
     public List<Team> getLeaderboard(){
         return repository.getLeaderboard();
     }
+
+    @Override
+    public void updateTeam(Team team) {
+        Team updatedTeam = repository.findTeamById(team.getId());
+        updatedTeam.setName(team.getName());
+        updatedTeam.setTotalPts(team.getTotalPts());
+        updatedTeam.setTotalAssists(team.getTotalAssists());
+        updatedTeam.setTotalRebounds(team.getTotalRebounds());
+
+        repository.save(updatedTeam);
+    }
+
 }
