@@ -8,4 +8,7 @@ public interface IPlayerService {
 
     List<Player> findAll();
 
+    void updatePlayer(Player player);
+
+    void updatePlayerImage(Player player);
 }

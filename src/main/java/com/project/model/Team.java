@@ -29,7 +29,7 @@ public class Team {
     @Column(name = "user_id")
     private Integer userId;
 
-    @OneToMany(mappedBy = "team")
+    @OneToMany(mappedBy = "team", fetch=FetchType.EAGER)
     @JsonManagedReference
     private List<PlayerTeam> players;
 
