@@ -22,10 +22,10 @@ public class UserController {
     @PostMapping(value="/users", consumes = MediaType.APPLICATION_JSON_VALUE)
     public UserResponse authenticateUser(@RequestBody User user) {
 
-        List<User> users = userService.findAll();
+        boolean authenticated = userService.authenticateUser(user);
         UserResponse userResponse = new UserResponse();
 
-        if(users.contains(user)) {
+        if(authenticated) {
             userResponse.setStatus(true);
             userResponse.setMessage("User authenticated");
             User newUser = userService.getUserByUsername(user.getUsername());

@@ -1,6 +1,7 @@
 package com.project.service;
 
 import com.project.model.User;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -13,9 +14,10 @@ public class TokenService {
     public TokenService() {}
 
     public String issueValidToken(User user){
-        payload.put("0000", user);
+        String token = RandomStringUtils.random(10, true, true);
+        payload.put(token, user);
         System.out.println("User authenticated, token issued");
-        return "0000";
+        return token;
     }
 
     public User validateToken(String token){

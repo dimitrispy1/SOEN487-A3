@@ -11,5 +11,7 @@ public interface IUserService {
 
     User getUserByUsername(String username);
 
+    boolean authenticateUser(User user);
+
     User getUserById(Integer id);
 }
