@@ -21,23 +21,19 @@ public class DailyStatTracker {
 
     public DailyStatTracker(){}
 
-    // TODO: for runJob
-    //Get all the stats for the current data (stats for all players that played today)
-    // Update daily stat table to hold these values ------- GET STAT MAP
-    // Go thru all the teams, and add up the points for based on today's score
-    //When done update all team stats DB write
-
-
     //Schedule to run once a day
     @Scheduled(fixedDelay = 86400000, initialDelay = 86400000)
     public void runDailyJob(){
 
+        System.out.println("Starting background process: retrieving and updating daily stats for teams");
         HashMap<String, DailyStats> dailyLeagueStats = this.api.getDailyStats();
 
         List<Team> teams = teamService.findAll();
         for (Team team: teams) {
+            System.out.println("Calculating team score for: " + team.getName());
             updateTeamStats(team, dailyLeagueStats);
         }
+        System.out.println("Completed background process");
     }
 
     private void updateTeamStats(Team team, HashMap<String, DailyStats> dailyStats){
@@ -59,7 +55,6 @@ public class DailyStatTracker {
         team.setTotalAssists(totalAssists);
         team.setTotalRebounds(totalRebounds);
 
-        System.out.println("Recording Daily stat for team " + team.getId());
         teamService.updateTeam(team);
 
     }

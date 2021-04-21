@@ -22,7 +22,7 @@ public class PlayerLoader {
     @PostConstruct
     public void run(){
         System.out.println("Loading and saving player data into DB ...");
-        //updatePlayerStats();
+        updatePlayerStats();
         //addPlayerImages();
     }
 
